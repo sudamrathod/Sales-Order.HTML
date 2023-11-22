@@ -1,0 +1,218 @@
+ <html>
+<head>
+    <!-- Your metadata goes here -->
+</head>
+<body>
+    <h2 style="text-align: center;">Sales Order</h2>
+    <!-- Your page content goes here -->
+</body>
+</html>
+<table border="1" cellpadding="1" cellspacing="1" width="671px" style="border-collapse:collapse;1px">
+  <tr style="font-size:12px">
+                                <td colspan= 2 rowspan=7>
+<b>Vrushali Infotech Pvt Ltd</b><br>
+  Ananda Niwas Shivshankar Colony No.2<br>
+Chakrpani Road Bhosari<br>
+GSTIN/UIN: 27AAECV1138M1Z3<br>
+State Name : Maharashtra, Code : 27<br>
+CIN: U72200PN2012PTC142974<br>
+E-Mail : ganesh@vrushaliinfotech.com</b></td>
+</tr>
+
+<tr style="font-size:12px">
+   <td>Order No.<br>{{doc.name}}</td> 
+    <td>Dated</td>
+    </tr>
+    <tr style="font-size:12px">
+        <td>Delivery Note</td>
+        <td>Mode/Terms of Payment<br>
+ </td>
+ 
+ 
+    </tr>
+    <tr style="font-size:12px">
+        <td>Reference No. & Date.</td>
+        
+        <td>Other References</td>
+    </tr>
+    <tr style="font-size:12px">
+        <td>Buyer’s Order No.</td>
+        <td>Dated</td>
+    </tr>
+   <tr style="font-size:12px">
+        <td>Dispatch Doc No.</td>
+        <td>Delivery Note Date</td>
+    </tr>
+    <tr style="font-size:12px">
+        <td>Dispatched through</td>
+        <td>Destination</td>
+        
+    </tr>
+
+<tr style="font-size:12px">
+   <tr style="font-size:12px">
+            <td class="c94" colspan="1" rowspan="">
+                 <b class="c167"><span class="c1">{{doc.customer_name}}</span></b>
+                <p class="c167"><span class="c1">{{doc.customer or "" }}</span></p>
+                <p class="c98"><span class="c1">{{ doc.address_display }}</span></p>
+               </td>
+               
+   
+    
+     <!-- Item Description Table -->
+  <table border="1" cellpadding="1" cellspacing="1" width="671px" style="border-collapse:collapse;1px">
+        <thead>
+             <tr style="font-size:12px">
+                <td rowspan="1" class="c1" style="font-size:10;">Sr. No</td>
+                <td rowspan="1" class="c1" style="font-size:10;">Description of Goods</td>
+                <td rowspan="1" class="c1" style="font-size:10;">HSN/SAC</td>
+                <td rowspan="1" class="c1" style="font-size:12;">Qty</td>
+                
+                <td rowspan="1" class="c1" style="font-size:9;">Rate</td>
+                <td rowspan="1" class="c1" style="font-size:10;">per</td>
+                <td rowspan="1" class="c1" style="font-size:10;">amount</t>
+            </tr>
+        </thead>
+          <tbody>
+            {% set total_amount = 0 %}
+            {% for item in doc.items %}
+             <tr style="font-size:12px">
+                 <td style="border-top: none; border-bottom: none;">{{ item.idx }}</td>
+                <td style="border-top: none; border-bottom: none;">{{ item.description or '' }}</td>
+                
+               <td style="border-top: none; border-bottom: none;">{{ item.gst_hsn_code }}</td>
+                
+         <td style="border-top: none; border-bottom: none;">{{ item.qty | round(2, 'floor') }}</td>
+                 
+                   <td style="border-top: none; border-bottom: none;">{{ '%.2f'|format(item.rate) }}</td>
+                 <td style="border-top: none; border-bottom: none;"> nos</td>
+              <td style="border-top: none; border-bottom: none;">{{ '%.2f'|format(item.amount) }}<br>
+             
+               </td>
+                {% set total_amount = total_amount + item.amount %}
+                
+            </tr>
+            {% endfor %}
+            
+                                 <tr  style="font-size:12px">
+            
+                                   <td style="border-top-style:1px;"></td>
+                                  
+                                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total</td
+                    
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{doc.total_qty}}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{doc.total}}</td>
+                                   
+                                </tr>
+                                
+   
+                              </tbody>    
+                             
+                            
+                             <table border="1" cellpadding="" cellspacing="" width="671px" style="border-collapse:collapse;">
+        <tr style="font-size:12px">
+            <td>Amount Chargeable (in words)<br>
+            <b> {{doc.in_words}}</b> E. & O.E</td>
+        </tr>
+    </table>
+     <table border="1" cellpadding="0" cellspacing="0" width="671px" style="border-collapse:collapse;">
+ 
+     <tr style="font-size:12px">
+                                <td rowspan=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HSC/SAC</td>
+                                <td rowspan=2>Taxable<br>Value</td>
+                                <td colspan=2>CGST</td>
+                                <td colspan=2>SGST/UTGST</td>
+                                
+                                <td rowspan=2>Total<br>Tax Amount</td>
+                            </tr>
+                            <tr style="font-size:12px">
+                                
+                                <td>Rate</td>
+                                <td>Amount</td>
+                                <td>Rate</td>
+                                <td>Amount</td>
+                                
+                            
+                            </tr>
+ {% set grouped_items = doc.items | groupby('gst_hsn_code') %}
+{% for gst_hsn_code, items in grouped_items %}
+    {% set total_amount = items | map(attribute='amount') | sum %}
+    <tr style="font-size:12px">
+        <td>{{ gst_hsn_code }}</td>
+        <td>{{ total_amount }}</td>
+        
+        {% for tax in doc.taxes %}
+            {% set tax_rate = 0 %}
+            {% set tax_amount = 0 %}
+            {% set found = false %}
+            
+            {% for item in items %}
+                {% if item.tax_name == tax.name %}
+                    {% set tax_rate = tax.rate %}
+                    {% set tax_amount = tax_amount + item.tax_amount %}
+                    {% set found = true %}
+                {% endif %}
+            {% endfor %}
+            
+            {# Display tax rate and tax amount in separate <td> elements #}
+           
+        {% endfor %}
+        
+        <td>9</td>
+        <td>{{ doc.total_taxes_and_charges / 4 }}</td>
+        <td>9</td>
+        <td> {{ doc.total_taxes_and_charges / 4 }}</td>
+        <td>{{ doc.total_taxes_and_charges /2 }}</td>
+    </tr>
+{% endfor %}
+
+
+                            <tr style="font-size:12px">
+                                <td><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total</b></td>
+                                <td><b>{{doc.total}}</b></td>
+                                <td rowspan=2></td>
+                                <td><b></b></td>
+                                <td></b></td>
+                                <td><b></b></td>
+                                <td><b>{{doc.total_taxes_and_charges/2}}</b></td>
+                                
+                              
+                                 
+                            </tr>
+        </table>
+                            </tr> <table border="1" cellpadding="" cellspacing="" width="675px" style="border-collapse:collapse;">
+                            
+                             <table border="1" cellpadding="0" cellspacing="0" width="671px" style="border-collapse:collapse;">
+                                 <tr style="font-size:11px" padding-left:"50px">
+                                      
+                               <td>Tax Amount (in words) :<b> Indian Rupees Three Thousand Two Hundred Forty Only</b><br>
+                              <br> Company’s PAN &nbsp;:<b> AAECV1138M</b><br>
+                                Declaration&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Company’s Bank Details<br>
+ We declare that this invoice shows the actual price of&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A/c Holder’s Name :<b> Vrushali Infotech Pvt Ltd.</b>
+ <br>
+ the goods described and that all particulars are true and&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bank Name&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :<b>Induslnd Bank Limited</b>
+ <br>
+correct.This is resale of software without any&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;A/c No.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:<b> 252185786786</b><br>
+
+
+modification and tax has been deducted under sec,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Branch & IFS Code &nbsp;&nbsp;:<b> Aundh Branch & INDB0000269</b>
+<br>194j. TDS is not applicable this Transactio.<br>
+ 
+                            </tr>   
+                                </tr>
+                            </table>
+                             <table border="1" cellpadding="" cellspacing="" width="671px" style="border-collapse:collapse;">
+                                <tr style="font-size:11px">
+                                    <td colspan=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Customer's Seal And Signature</td>
+                                   <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> for Vrushali Infotech Pvt Ltd</b><br>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Authorised Signatory</td>
+                                </tr>
+                            </table>
+                            
+                            <tr style="font-size:12px">
+                            <div><center>SUBJECT TO PUNE JURISDICTION<br>This is a Computer Generated Invoice</center></div>
+    
